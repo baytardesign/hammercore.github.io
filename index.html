@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="HammerCore - Next-generation mapping development platform for Garry's Mod and the Source Engine featuring AI-assisted workflows and real-time collaboration.">
+    <title>HammerCore | Next-Gen Source Engine Mapping Platform</title>
+
+    <!-- Google Fonts & Lucide Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        hc: {
+                            bg: '#0a0c10',
+                            panel: '#12161f',
+                            card: '#181d28',
+                            border: '#283040',
+                            borderLight: '#3a465d',
+                            cyan: '#00f0ff',
+                            cyanGlow: 'rgba(0, 240, 255, 0.15)',
+                            amber: '#ff9e00',
+                            text: '#d1d5db',
+                            textMuted: '#808c9c',
+                            textHeading: '#f3f4f6'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom UI Scroller and Grid Canvas Rules */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0c10;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #283040;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3a465d;
+        }
+        .grid-bg {
+            background-size: 24px 24px;
+            background-image: 
+                linear-gradient(to right, rgba(40, 48, 64, 0.3) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(40, 48, 64, 0.3) 1px, transparent 1px);
+        }
+        .grid-bg-dense {
+            background-size: 12px 12px;
+            background-image: 
+                linear-gradient(to right, rgba(40, 48, 64, 0.2) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(40, 48, 64, 0.2) 1px, transparent 1px);
+        }
+        .glow-accent {
+            box-shadow: 0 0 25px -5px rgba(0, 240, 255, 0.12);
+        }
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-hc-bg text-hc-text font-sans antialiased selection:bg-hc-cyan selection:text-black">
+
+    <!-- GLOBAL JS CONFIGURATION SCRIPT -->
+    <script>
+        // Central configuration for project links and states
+        const CONFIG = {
+            discordUrl: "https://discord.gg/example-hammercore-placeholder",
+            docsUrl: "https://docs.hammercore.dev-placeholder",
+            githubUrl: "https://github.com/baytardesign/hammercore-placeholder",
+            status: "Pre-Alpha • Active R&D Phase",
+            version: "0.1.0-dev",
+            organization: "Baytar Design"
+        };
+    </script>
+
+    <!-- HEADER / NAVIGATION BAR -->
+    <header class="sticky top-0 z-50 bg-hc-bg/90 backdrop-blur-md border-b border-hc-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Wordmark Branding -->
+                <a href="#home" class="flex items-center space-x-3 group focus:outline-none focus:ring-2 focus:ring-hc-cyan rounded-md p-1">
+                    <div class="w-8 h-8 rounded bg-gradient-to-br from-hc-cyan/20 to-hc-amber/20 border border-hc-cyan/50 flex items-center justify-center font-mono font-bold text-hc-cyan text-base group-hover:border-hc-cyan transition-colors">
+                        HC
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-mono font-bold tracking-wider text-lg text-hc-textHeading flex items-center gap-1">
+                            HAMMER<span class="text-hc-cyan">CORE</span>
+                        </span>
+                        <span class="text-[9px] font-mono tracking-widest text-hc-textMuted uppercase">BY BAYTAR DESIGN</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Nav Links -->
+                <nav class="hidden md:flex items-center space-x-1 text-sm font-medium">
+                    <a href="#home" class="px-3 py-2 rounded-md hover:text-hc-cyan hover:bg-hc-panel transition-colors">Home</a>
+                    <a href="#features" class="px-3 py-2 rounded-md hover:text-hc-cyan hover:bg-hc-panel transition-colors">Features</a>
+                    <a href="#collaboration" class="px-3 py-2 rounded-md hover:text-hc-cyan hover:bg-hc-panel transition-colors">Collaboration</a>
+                    <a href="#ai-suite" class="px-3 py-2 rounded-md hover:text-hc-cyan hover:bg-hc-panel transition-colors">AI Suite</a>
+                    <a href="#roadmap" class="px-3 py-2 rounded-md hover:text-hc-cyan hover:bg-hc-panel transition-colors">Roadmap</a>
+                    <a href="#faq" class="px-3 py-2 rounded-md hover:text-hc-cyan hover:bg-hc-panel transition-colors">FAQ</a>
+                    <a href="#files-export" class="px-3 py-2 rounded-md text-hc-amber hover:bg-hc-panel transition-colors font-mono text-xs flex items-center gap-1 border border-hc-amber/30">
+                        <i data-lucide="folder-git-2" class="w-3.5 h-3.5"></i> Repository Export
+                    </a>
+                </nav>
+
+                <!-- Actions / Social CTA -->
+                <div class="hidden md:flex items-center space-x-3">
+                    <a id="nav-docs-link" href="#" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 text-xs font-mono rounded bg-hc-panel hover:bg-hc-border border border-hc-border text-hc-text hover:text-white transition-all flex items-center gap-1.5">
+                        <i data-lucide="book-open" class="w-3.5 h-3.5"></i> Docs
+                    </a>
+                    <a id="nav-discord-link" href="#" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 text-xs font-mono rounded bg-hc-cyan/10 hover:bg-hc-cyan/20 border border-hc-cyan/40 text-hc-cyan hover:shadow-sm transition-all flex items-center gap-1.5">
+                        <i data-lucide="message-square" class="w-3.5 h-3.5"></i> Join Discord
+                    </a>
+                </div>
+
+                <!-- Mobile Hamburger Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" type="button" class="p-2 rounded-md text-hc-textMuted hover:text-white hover:bg-hc-panel focus:outline-none focus:ring-2 focus:ring-hc-cyan" aria-label="Toggle navigation menu">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Drawer Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-hc-panel border-b border-hc-border px-4 pt-2 pb-6 space-y-2">
+            <a href="#home" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium hover:text-hc-cyan hover:bg-hc-bg">Home</a>
+            <a href="#features" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium hover:text-hc-cyan hover:bg-hc-bg">Features</a>
+            <a href="#collaboration" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium hover:text-hc-cyan hover:bg-hc-bg">Collaboration</a>
+            <a href="#ai-suite" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium hover:text-hc-cyan hover:bg-hc-bg">AI Suite</a>
+            <a href="#roadmap" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium hover:text-hc-cyan hover:bg-hc-bg">Roadmap</a>
+            <a href="#faq" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium hover:text-hc-cyan hover:bg-hc-bg">FAQ</a>
+            <a href="#files-export" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-hc-amber hover:bg-hc-bg">Export Project Files</a>
+            <div class="pt-4 flex flex-col gap-2">
+                <a id="mobile-docs-link" href="#" target="_blank" rel="noopener noreferrer" class="w-full text-center py-2 text-xs font-mono rounded bg-hc-card border border-hc-border text-hc-text">Documentation</a>
+                <a id="mobile-discord-link" href="#" target="_blank" rel="noopener noreferrer" class="w-full text-center py-2 text-xs font-mono rounded bg-hc-cyan/20 border border-hc-cyan/40 text-hc-cyan font-semibold">Join Community Discord</a>
+            </div>
+        </div>
+    </header>
+
+    <main id="home">
+        <!-- HERO SECTION -->
+        <section class="relative pt-12 pb-20 lg:pt-20 lg:pb-32 overflow-hidden border-b border-hc-border grid-bg">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="text-center max-w-3xl mx-auto">
+                    <!-- Status Badge -->
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-hc-panel border border-hc-border text-xs font-mono text-hc-textMuted mb-6">
+                        <span class="w-2 h-2 rounded-full bg-hc-amber animate-pulse"></span>
+                        <span>Project Status: <strong class="text-hc-textHeading font-normal" id="hero-status-tag">In Active Development • Pre-Alpha</strong></span>
+                    </div>
+
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-hc-textHeading tracking-tight leading-tight mb-6">
+                        Build Worlds <br class="hidden sm:inline" />
+                        <span class="bg-gradient-to-r from-hc-cyan via-cyan-200 to-hc-amber bg-clip-text text-transparent">
+                            Without Limits.
+                        </span>
+                    </h1>
+
+                    <p class="text-base sm:text-lg text-hc-textMuted leading-relaxed mb-8 max-w-2xl mx-auto">
+                        HammerCore is an ambitious new mapping development platform for Garry's Mod and the Source Engine, designed to bring AI-assisted workflows, advanced CAD geometry tools, and real-time collaborative map creation into one unified environment.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+                        <a href="#features" class="w-full sm:w-auto px-6 py-3 rounded-md bg-hc-cyan text-black font-semibold hover:bg-cyan-300 transition-all shadow-lg shadow-hc-cyan/10 flex items-center justify-center gap-2 text-sm">
+                            <i data-lucide="layers" class="w-4 h-4"></i> Explore Features
+                        </a>
+                        <a href="#roadmap" class="w-full sm:w-auto px-6 py-3 rounded-md bg-hc-panel border border-hc-border text-hc-textHeading font-semibold hover:bg-hc-border transition-all flex items-center justify-center gap-2 text-sm">
+                            <i data-lucide="map" class="w-4 h-4"></i> View Development Roadmap
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 3D WORKSPACE MOCKUP (IDE INTERFACE) -->
+                <div class="mt-8 max-w-5xl mx-auto rounded-xl bg-hc-panel border border-hc-border shadow-2xl overflow-hidden glow-accent">
+                    <!-- Workspace Titlebar -->
+                    <div class="bg-hc-bg px-4 py-2.5 border-b border-hc-border flex items-center justify-between font-mono text-xs text-hc-textMuted select-none">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-red-500/80 inline-block"></span>
+                            <span class="w-3 h-3 rounded-full bg-yellow-500/80 inline-block"></span>
+                            <span class="w-3 h-3 rounded-full bg-green-500/80 inline-block"></span>
+                            <span class="ml-3 text-hc-textHeading font-semibold">HammerCore Studio 2026 - [gm_construct_reimagined.vmf]</span>
+                        </div>
+                        <div class="hidden sm:flex items-center space-x-4">
+                            <span class="text-hc-cyan flex items-center gap-1"><i data-lucide="cpu" class="w-3.5 h-3.5"></i> VMF Engine: Active</span>
+                            <span>Grid: 16 units</span>
+                            <span>SDK: Source 2013</span>
+                        </div>
+                    </div>
+
+                    <!-- Editor Menubar / Toolbar -->
+                    <div class="bg-hc-card px-4 py-1.5 border-b border-hc-border flex items-center text-xs font-mono text-hc-textMuted gap-4 overflow-x-auto">
+                        <span class="text-hc-textHeading cursor-pointer hover:text-hc-cyan">File</span>
+                        <span class="cursor-pointer hover:text-hc-cyan">Edit</span>
+                        <span class="cursor-pointer hover:text-hc-cyan">View</span>
+                        <span class="cursor-pointer hover:text-hc-cyan">Selection</span>
+                        <span class="cursor-pointer hover:text-hc-cyan">Tools</span>
+                        <span class="cursor-pointer hover:text-hc-cyan">AI Assistant</span>
+                        <span class="cursor-pointer hover:text-hc-cyan text-hc-amber">Sync (2 Active)</span>
+                    </div>
+
+                    <!-- 4-Viewport Layout Simulation -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-1 p-1 bg-hc-bg">
+                        <!-- Viewport 1: 3D Textured Render View -->
+                        <div class="relative bg-hc-card h-52 sm:h-64 border border-hc-border/80 rounded overflow-hidden group">
+                            <div class="absolute top-2 left-2 z-10 bg-hc-bg/80 border border-hc-border px-2 py-0.5 rounded text-[10px] font-mono text-hc-cyan">
+                                Camera (3D Textured)
+                            </div>
+                            <!-- Render Content SVG -->
+                            <svg class="w-full h-full" viewBox="0 0 400 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="400" height="250" fill="#12161f"/>
+                                <!-- Skybox gradient -->
+                                <rect width="400" height="130" fill="url(#sky-grad)"/>
+                                <defs>
+                                    <linearGradient id="sky-grad" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#1e293b"/>
+                                        <stop offset="100%" stop-color="#0f172a"/>
+                                    </linearGradient>
+                                </defs>
+                                <!-- Ground plane -->
+                                <polygon points="0,170 400,170 400,250 0,250" fill="#1c2333"/>
+                                <!-- 3D Brush Box Wireframe & Faces -->
+                                <polygon points="120,170 200,120 280,170 200,210" fill="#2d3748" stroke="#00f0ff" stroke-width="1.5"/>
+                                <polygon points="120,170 200,210 200,240 120,195" fill="#1a202c" stroke="#00f0ff" stroke-width="1.5"/>
+                                <polygon points="200,210 280,170 280,195 200,240" fill="#283141" stroke="#00f0ff" stroke-width="1.5"/>
+                                <!-- Light entity point -->
+                                <circle cx="200" cy="80" r="4" fill="#ff9e00"/>
+                                <circle cx="200" cy="80" r="16" fill="#ff9e00" opacity="0.2"/>
+                                <line x1="200" y1="80" x2="200" y2="120" stroke="#ff9e00" stroke-dasharray="2,2"/>
+                                <!-- Crosshair/Gizmo -->
+                                <line x1="200" y1="165" x2="200" y2="145" stroke="#ff0055" stroke-width="2"/>
+                                <line x1="200" y1="165" x2="220" y2="165" stroke="#00ff66" stroke-width="2"/>
+                                <line x1="200" y1="165" x2="185" y2="175" stroke="#00f0ff" stroke-width="2"/>
+                            </svg>
+                        </div>
+
+                        <!-- Viewport 2: Top View (2D Orthographic X/Y) -->
+                        <div class="relative bg-hc-card h-52 sm:h-64 border border-hc-border/80 rounded overflow-hidden grid-bg-dense">
+                            <div class="absolute top-2 left-2 z-10 bg-hc-bg/80 border border-hc-border px-2 py-0.5 rounded text-[10px] font-mono text-hc-textMuted">
+                                Top (2D X/Y Grid)
+                            </div>
+                            <svg class="w-full h-full" viewBox="0 0 400 250" fill="none">
+                                <rect x="80" y="40" width="160" height="120" fill="none" stroke="#00f0ff" stroke-width="1.5"/>
+                                <line x1="80" y1="40" x2="240" y2="160" stroke="#00f0ff" stroke-opacity="0.3"/>
+                                <line x1="240" y1="40" x2="80" y2="160" stroke="#00f0ff" stroke-opacity="0.3"/>
+                                <!-- Entity Node -->
+                                <rect x="280" y="90" width="20" height="20" fill="#ff9e00" fill-opacity="0.2" stroke="#ff9e00"/>
+                                <text x="270" y="80" fill="#808c9c" font-size="10" font-family="monospace">info_player_start</text>
+                            </svg>
+                        </div>
+
+                        <!-- Viewport 3: Front View (2D Orthographic X/Z) -->
+                        <div class="relative bg-hc-card h-52 sm:h-64 border border-hc-border/80 rounded overflow-hidden grid-bg-dense hidden sm:block">
+                            <div class="absolute top-2 left-2 z-10 bg-hc-bg/80 border border-hc-border px-2 py-0.5 rounded text-[10px] font-mono text-hc-textMuted">
+                                Front (2D X/Z Grid)
+                            </div>
+                            <svg class="w-full h-full" viewBox="0 0 400 250" fill="none">
+                                <rect x="80" y="100" width="160" height="90" fill="none" stroke="#00f0ff" stroke-width="1.5"/>
+                                <circle cx="160" cy="60" r="6" stroke="#ff9e00" stroke-width="1.5"/>
+                                <text x="172" y="64" fill="#808c9c" font-size="10" font-family="monospace">light_spot</text>
+                            </svg>
+                        </div>
+
+                        <!-- Viewport 4: Side View / AI Node Stream Panel -->
+                        <div class="relative bg-hc-card h-52 sm:h-64 border border-hc-border/80 rounded overflow-hidden p-3 font-mono text-xs flex flex-col justify-between">
+                            <div class="flex items-center justify-between border-b border-hc-border pb-2 text-[11px] text-hc-textMuted">
+                                <span class="text-hc-amber font-semibold flex items-center gap-1">
+                                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> AI Geometry Copilot
+                                </span>
+                                <span>Status: Idle</span>
+                            </div>
+                            <div class="space-y-2 text-[11px] my-auto">
+                                <div class="bg-hc-bg p-2 rounded border border-hc-border/60 text-hc-textMuted">
+                                    <span class="text-hc-cyan">&gt; AI:</span> Analyzing selection (3 brushes, 1 light entity)...
+                                </div>
+                                <div class="bg-hc-bg p-2 rounded border border-hc-border/60 text-hc-text">
+                                    <span class="text-hc-amber">&gt; Suggestion:</span> Align floor brush to 16-unit grid to eliminate 0.4 unit micro-gap leaking light.
+                                </div>
+                            </div>
+                            <button class="w-full py-1.5 rounded bg-hc-border/80 hover:bg-hc-border text-hc-textHeading text-[11px] font-sans">
+                                Apply Auto-Alignment Fix
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Editor Footer / Status Bar -->
+                    <div class="bg-hc-bg px-4 py-1.5 border-t border-hc-border flex items-center justify-between text-[11px] font-mono text-hc-textMuted">
+                        <div class="flex items-center space-x-4">
+                            <span>X: 1024.0 Y: -512.0 Z: 64.0</span>
+                            <span class="text-hc-cyan">FPS: 144</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <span class="text-xs text-hc-amber">● Pre-Alpha Concept UI</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FEATURES GRID SECTION -->
+        <section id="features" class="py-20 bg-hc-bg border-b border-hc-border">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-16">
+                    <h2 class="text-xs font-mono uppercase tracking-widest text-hc-cyan mb-3">Planned Platform Capabilities</h2>
+                    <p class="text-3xl sm:text-4xl font-extrabold text-hc-textHeading">Engineered for Ambitious Level Designers</p>
+                    <p class="mt-4 text-hc-textMuted text-sm sm:text-base">
+                        HammerCore replaces legacy constraints with modern software engineering paradigms designed specifically for Source Engine mapping workflows.
+                    </p>
+                </div>
+
+                <!-- 6 Card Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Feature 1 -->
+                    <div class="bg-hc-panel border border-hc-border rounded-lg p-6 hover:border-hc-cyan/50 transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-10 h-10 rounded bg-hc-cyan/10 border border-hc-cyan/30 flex items-center justify-center text-hc-cyan">
+                                    <i data-lucide="bot" class="w-5 h-5"></i>
+                                </div>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-hc-amber/10 border border-hc-amber/30 text-hc-amber">Planned</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-hc-textHeading mb-2">AI-Assisted Mapping</h3>
+                            <p class="text-xs sm:text-sm text-hc-textMuted leading-relaxed">
+                                AI-assisted room layout generation, geometry brush editing, contextual suggestions, and repetitive detail task automation.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-hc-border/50 text-xs font-mono text-hc-textMuted">
+                            Module: Core AI Engine
+                        </div>
+                    </div>
+
+                    <!-- Feature 2 -->
+                    <div class="bg-hc-panel border border-hc-border rounded-lg p-6 hover:border-hc-cyan/50 transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-10 h-10 rounded bg-hc-cyan/10 border border-hc-cyan/30 flex items-center justify-center text-hc-cyan">
+                                    <i data-lucide="users" class="w-5 h-5"></i>
+                                </div>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-hc-amber/10 border border-hc-amber/30 text-hc-amber">Planned</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-hc-textHeading mb-2">Real-Time Collaboration</h3>
+                            <p class="text-xs sm:text-sm text-hc-textMuted leading-relaxed">
+                                A planned multi-user synchronization layer permitting multiple mappers to edit geometry, place props, and fix lighting concurrently.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-hc-border/50 text-xs font-mono text-hc-textMuted">
+                            Module: NetSync Protocol
+                        </div>
+                    </div>
+
+                    <!-- Feature 3 -->
+                    <div class="bg-hc-panel border border-hc-border rounded-lg p-6 hover:border-hc-cyan/50 transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-10 h-10 rounded bg-hc-cyan/10 border border-hc-cyan/30 flex items-center justify-center text-hc-cyan">
+                                    <i data-lucide="box" class="w-5 h-5"></i>
+                                </div>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-hc-amber/10 border border-hc-amber/30 text-hc-amber">Planned</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-hc-textHeading mb-2">Advanced Mapping Tools</h3>
+                            <p class="text-xs sm:text-sm text-hc-textMuted leading-relaxed">
+                                Modern non-destructive geometry operations, improved vertex clipping, smart prop snapping, and instant texture alignment pipelines.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-hc-border/50 text-xs font-mono text-hc-textMuted">
+                            Module: Geometry Core
+                        </div>
+                    </div>
+
+                    <!-- Feature 4 -->
+                    <div class="bg-hc-panel border border-hc-border rounded-lg p-6 hover:border-hc-cyan/50 transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-10 h-10 rounded bg-hc-cyan/10 border border-hc-cyan/30 flex items-center justify-center text-hc-cyan">
+                                    <i data-lucide="gauge" class="w-5 h-5"></i>
+                                </div>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-hc-amber/10 border border-hc-amber/30 text-hc-amber">Planned</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-hc-textHeading mb-2">Smart Optimization</h3>
+                            <p class="text-xs sm:text-sm text-hc-textMuted leading-relaxed">
+                                Real-time detection of leaky geometry, invalid brush solids, excessive lightmap scales, and automated hint/skip plane suggestions.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-hc-border/50 text-xs font-mono text-hc-textMuted">
+                            Module: VIS & Leak Analyzer
+                        </div>
+                    </div>
+
+                    <!-- Feature 5 -->
+                    <div class="bg-hc-panel border border-hc-border rounded-lg p-6 hover:border-hc-cyan/50 transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-10 h-10 rounded bg-hc-cyan/10 border border-hc-cyan/30 flex items-center justify-center text-hc-cyan">
+                                    <i data-lucide="play-circle" class="w-5 h-5"></i>
+                                </div>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-hc-amber/10 border border-hc-amber/30 text-hc-amber">Planned</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-hc-textHeading mb-2">Workflow Automation</h3>
+                            <p class="text-xs sm:text-sm text-hc-textMuted leading-relaxed">
+                                Parallelized map compilation queues (VBSP, VVIS, VRAD), crash-proof auto-backups, and automated Garry's Mod mounting checks.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-hc-border/50 text-xs font-mono text-hc-textMuted">
+                            Module: Compile System
+                        </div>
+                    </div>
+
+                    <!-- Feature 6 -->
+                    <div class="bg-hc-panel border border-hc-border rounded-lg p-6 hover:border-hc-cyan/50 transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-10 h-10 rounded bg-hc-cyan/10 border border-hc-cyan/30 flex items-center justify-center text-hc-cyan">
+                                    <i data-lucide="file-code" class="w-5 h-5"></i>
+                                </div>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-hc-amber/10 border border-hc-amber/30 text-hc-amber">Planned</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-hc-textHeading mb-2">Source Engine Compatibility</h3>
+                            <p class="text-xs sm:text-sm text-hc-textMuted leading-relaxed">
+                                Full support for standard VMF format specifications, materials (VMT/VTF), entity logic, and Garry's Mod custom content.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-hc-border/50 text-xs font-mono text-hc-textMuted">
+                            Module: Source VMF Parser
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- COLLABORATION SHOWCASE SECTION -->
+        <section id="collaboration" class="py-20 bg-hc-panel border-b border-hc-border">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    <!-- Text Description -->
+                    <div class="lg:col-span-5 space-y-6">
+                        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-hc-cyan/10 border border-hc-cyan/30 text-xs font-mono text-hc-cyan">
+                            <i data-lucide="share-2" class="w-3.5 h-3.5"></i> Multi-User Synchronized Editing
+                        </div>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-hc-textHeading tracking-tight">
+                            Build Maps Together in Real-Time
+                        </h2>
+                        <p class="text-hc-textMuted text-sm sm:text-base leading-relaxed">
+                            No more emailing .VMF files back and forth or locking entire levels during team development. HammerCore's multi-user framework allows map teams to collaborate simultaneously in one shared 3D viewport.
+                        </p>
+
+                        <div class="space-y-3 font-mono text-xs">
+                            <div class="flex items-start gap-3 p-3 rounded bg-hc-bg border border-hc-border">
+                                <i data-lucide="mouse-pointer" class="w-4 h-4 text-hc-cyan shrink-0 mt-0.5"></i>
+                                <div>
+                                    <strong class="text-hc-textHeading block mb-0.5">Live Viewport Cursors</strong>
+                                    <span class="text-hc-textMuted">See team member selections, camera positions, and active edit vectors in real-time.</span>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 rounded bg-hc-bg border border-hc-border">
+                                <i data-lucide="git-merge" class="w-4 h-4 text-hc-amber shrink-0 mt-0.5"></i>
+                                <div>
+                                    <strong class="text-hc-textHeading block mb-0.5">Non-Blocking Conflict Resolution</strong>
+                                    <span class="text-hc-textMuted">Grid sector locks prevent overlapping brush edits while keeping the rest of the map open.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-3 rounded bg-hc-amber/10 border border-hc-amber/30 text-xs font-mono text-hc-amber flex items-center gap-2">
+                            <i data-lucide="alert-triangle" class="w-4 h-4 shrink-0"></i>
+                            <span>Development Goal: Subject to ongoing network protocol optimization and technical feasibility.</span>
+                        </div>
+                    </div>
+
+                    <!-- Custom Interactive Collaboration UI Mockup -->
+                    <div class="lg:col-span-7 rounded-xl bg-hc-card border border-hc-border p-4 shadow-xl">
+                        <div class="flex items-center justify-between border-b border-hc-border pb-3 mb-4 font-mono text-xs">
+                            <div class="flex items-center space-x-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-green-400"></span>
+                                <span class="text-hc-textHeading font-semibold">Session: #construct-dev-room</span>
+                            </div>
+                            <div class="flex items-center space-x-2 text-[11px]">
+                                <span class="px-2 py-0.5 rounded bg-hc-cyan/20 text-hc-cyan border border-hc-cyan/40">Alex (Lighting)</span>
+                                <span class="px-2 py-0.5 rounded bg-hc-amber/20 text-hc-amber border border-hc-amber/40">Sami (Geometry)</span>
+                            </div>
+                        </div>
+
+                        <!-- Canvas Collaboration Grid Visualization -->
+                        <div class="relative h-72 sm:h-80 bg-hc-bg rounded border border-hc-border overflow-hidden grid-bg">
+                            <!-- Developer A Cursors & Bounds -->
+                            <div class="absolute top-12 left-16 border-2 border-dashed border-hc-cyan p-3 rounded bg-hc-cyan/5 text-xs font-mono">
+                                <span class="bg-hc-cyan text-black px-1.5 py-0.5 text-[9px] rounded font-bold uppercase">Alex • Editing Skybox Lighting</span>
+                                <div class="mt-4 w-32 h-16 border border-hc-cyan/50 rounded flex items-center justify-center text-[10px] text-hc-cyan">
+                                    light_environment node
+                                </div>
+                            </div>
+
+                            <!-- Developer B Cursor & Bounds -->
+                            <div class="absolute bottom-10 right-12 border-2 border-dashed border-hc-amber p-3 rounded bg-hc-amber/5 text-xs font-mono">
+                                <span class="bg-hc-amber text-black px-1.5 py-0.5 text-[9px] rounded font-bold uppercase">Sami • Extending Plaza Wall</span>
+                                <div class="mt-2 w-40 h-20 bg-hc-amber/10 border border-hc-amber/60 rounded flex items-center justify-center text-[10px] text-hc-amber">
+                                    func_detail brush (128x256)
+                                </div>
+                            </div>
+
+                            <!-- Live Event Feed Bar overlay -->
+                            <div class="absolute bottom-2 left-2 right-2 bg-hc-panel/90 backdrop-blur-sm border border-hc-border px-3 py-1.5 rounded flex items-center justify-between text-[11px] font-mono text-hc-textMuted">
+                                <span class="text-hc-cyan">✔ Sync: Sami modified entity light_environment (1 sec ago)</span>
+                                <span>Ping: 24ms</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI SHOWCASE SECTION -->
+        <section id="ai-suite" class="py-20 bg-hc-bg border-b border-hc-border">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-16">
+                    <h2 class="text-xs font-mono uppercase tracking-widest text-hc-amber mb-3">Intelligent Level Creation</h2>
+                    <p class="text-3xl sm:text-4xl font-extrabold text-hc-textHeading">AI Copilot Built for Source Mappers</p>
+                    <p class="mt-4 text-hc-textMuted text-sm sm:text-base">
+                        Eliminate repetitive alignment tasks, accelerate layout prototyping, and identify map performance bottlenecks automatically.
+                    </p>
+                </div>
+
+                <!-- Showcase Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                    <!-- Interactive AI Prompt & Node Simulator Visual -->
+                    <div class="bg-hc-panel border border-hc-border rounded-xl p-6 font-mono text-xs">
+                        <div class="flex items-center justify-between border-b border-hc-border pb-3 mb-4 text-hc-textMuted">
+                            <span class="flex items-center gap-2 text-hc-cyan font-bold">
+                                <i data-lucide="sparkles" class="w-4 h-4"></i> HammerCore AI Assistant
+                            </span>
+                            <span class="text-[10px] bg-hc-border px-2 py-0.5 rounded">R&D Prototype Concept</span>
+                        </div>
+
+                        <!-- Prompt Input Mockup -->
+                        <div class="mb-4">
+                            <label class="block text-hc-textMuted text-[10px] uppercase tracking-wider mb-1.5">Prompt Input</label>
+                            <div class="flex gap-2">
+                                <input type="text" readonly value="Generate 4-room urban warehouse layout with elevator shaft and light entities" class="w-full bg-hc-bg border border-hc-border rounded px-3 py-2 text-hc-textHeading focus:outline-none focus:border-hc-cyan text-xs">
+                                <button class="bg-hc-cyan text-black px-4 py-2 rounded font-semibold hover:bg-cyan-300 shrink-0">
+                                    Generate
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- AI Node Execution Graph Visual -->
+                        <div class="bg-hc-bg rounded border border-hc-border p-4 space-y-3 text-[11px]">
+                            <div class="flex items-center justify-between text-hc-textMuted border-b border-hc-border/40 pb-1.5">
+                                <span>Node Graph Pipeline Execution</span>
+                                <span class="text-hc-cyan">100% Processed</span>
+                            </div>
+
+                            <div class="flex items-center gap-2 text-green-400">
+                                <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
+                                <span>Constructing bounding hull (2048 x 1024 x 512 units)</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-green-400">
+                                <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
+                                <span>Generating door frame geometry & prop_static anchors</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-green-400">
+                                <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
+                                <span>Placing light_spot entities with warm industrial temperature</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-hc-amber">
+                                <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i>
+                                <span>Optimization Note: Added func_visleaf split on room doorways</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bullet Explanations -->
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 rounded bg-hc-amber/10 border border-hc-amber/30 flex items-center justify-center text-hc-amber shrink-0 mt-1">
+                                <i data-lucide="layout-grid" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-hc-textHeading mb-1">Room Layout Concept Generation</h3>
+                                <p class="text-xs sm:text-sm text-hc-textMuted leading-relaxed">
+                                    Quickly synthesize initial graybox geometry layouts from parametric descriptors to skip tedious initial brush blocking.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 rounded bg-hc-amber/10 border border-hc-amber/30 flex items-center justify-center text-hc-amber shrink-0 mt-1">
+                                <i data-lucide="wand-2" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-hc-textHeading mb-1">Repetitive Task Automation</h3>
+                                <p class="text-xs sm:text-sm text-hc-textMuted leading-relaxed">
+                                    Automate staircase step creation, doorway framing, structural pillar repeats, and prop detail alignment with one click.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 rounded bg-hc-amber/10 border border-hc-amber/30 flex items-center justify-center text-hc-amber shrink-0 mt-1">
+                                <i data-lucide="shield-alert" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-hc-textHeading mb-1">Automated Optimization Auditing</h3>
+                                <p class="text-xs sm:text-sm text-hc-textMuted leading-relaxed">
+                                    Identify invalid concave brushes, seal point leaks, and optimize lightmap resolutions before running long compile passes.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ROADMAP SECTION -->
+        <section id="roadmap" class="py-20 bg-hc-panel border-b border-hc-border">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-16">
+                    <h2 class="text-xs font-mono uppercase tracking-widest text-hc-cyan mb-3">Development Strategy</h2>
+                    <p class="text-3xl sm:text-4xl font-extrabold text-hc-textHeading">Technical Roadmap</p>
+                    <p class="mt-4 text-hc-textMuted text-sm sm:text-base">
+                        Clear, realistic engineering milestones. We do not set fake release deadlines—milestones advance as technical requirements are satisfied.
+                    </p>
+                </div>
+
+                <!-- Vertical Timeline Grid -->
+                <div class="max-w-4xl mx-auto space-y-8 relative before:absolute before:inset-0 before:left-4 sm:before:left-1/2 before:-ml-px before:w-0.5 before:bg-hc-border">
+                    
+                    <!-- Phase 1 -->
+                    <div class="relative flex flex-col sm:flex-row items-start sm:items-center group">
+                        <div class="flex items-center justify-center w-8 h-8 rounded-full bg-hc-cyan text-black font-bold font-mono text-xs z-10 shrink-0 sm:mx-auto">
+                            1
+                        </div>
+                        <div class="w-full sm:w-1/2 sm:pr-8 mt-3 sm:mt-0 sm:text-right">
+                            <div class="bg-hc-bg border border-hc-cyan/50 p-5 rounded-lg">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-hc-cyan/10 border border-hc-cyan/40 text-hc-cyan inline-block mb-2">Phase 1 • In Progress</span>
+                                <h3 class="text-lg font-bold text-hc-textHeading">Project Foundation</h3>
+                                <p class="text-xs text-hc-textMuted mt-2 leading-relaxed">
+                                    Website, visual identity, architecture research, and Source Engine VMF specification parser investigation.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 2 -->
+                    <div class="relative flex flex-col sm:flex-row items-start sm:items-center group">
+                        <div class="flex items-center justify-center w-8 h-8 rounded-full bg-hc-card border border-hc-border text-hc-textMuted font-bold font-mono text-xs z-10 shrink-0 sm:mx-auto">
+                            2
+                        </div>
+                        <div class="w-full sm:w-1/2 sm:pl-8 sm:ml-auto mt-3 sm:mt-0">
+                            <div class="bg-hc-bg border border-hc-border p-5 rounded-lg">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-hc-border text-hc-textMuted inline-block mb-2">Phase 2 • Planned</span>
+                                <h3 class="text-lg font-bold text-hc-textHeading">Core Mapping Tools</h3>
+                                <p class="text-xs text-hc-textMuted mt-2 leading-relaxed">
+                                    Prototype CAD geometry editor tools, 2D/3D viewport rendering engines, and initial VMF file read/write pipelines.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 3 -->
+                    <div class="relative flex flex-col sm:flex-row items-start sm:items-center group">
+                        <div class="flex items-center justify-center w-8 h-8 rounded-full bg-hc-card border border-hc-border text-hc-textMuted font-bold font-mono text-xs z-10 shrink-0 sm:mx-auto">
+                            3
+                        </div>
+                        <div class="w-full sm:w-1/2 sm:pr-8 mt-3 sm:mt-0 sm:text-right">
+                            <div class="bg-hc-bg border border-hc-border p-5 rounded-lg">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-hc-border text-hc-textMuted inline-block mb-2">Phase 3 • Planned</span>
+                                <h3 class="text-lg font-bold text-hc-textHeading">AI Workflows Integration</h3>
+                                <p class="text-xs text-hc-textMuted mt-2 leading-relaxed">
+                                    Experimental AI geometry assistant, automated leak detection passes, and asset management automation.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 4 -->
+                    <div class="relative flex flex-col sm:flex-row items-start sm:items-center group">
+                        <div class="flex items-center justify-center w-8 h-8 rounded-full bg-hc-card border border-hc-border text-hc-textMuted font-bold font-mono text-xs z-10 shrink-0 sm:mx-auto">
+                            4
+                        </div>
+                        <div class="w-full sm:w-1/2 sm:pl-8 sm:ml-auto mt-3 sm:mt-0">
+                            <div class="bg-hc-bg border border-hc-border p-5 rounded-lg">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-hc-border text-hc-textMuted inline-block mb-2">Phase 4 • Planned</span>
+                                <h3 class="text-lg font-bold text-hc-textHeading">Collaborative Mapping</h3>
+                                <p class="text-xs text-hc-textMuted mt-2 leading-relaxed">
+                                    Shared project network sync layer, spatial grid conflict handling, and version history control.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 5 -->
+                    <div class="relative flex flex-col sm:flex-row items-start sm:items-center group">
+                        <div class="flex items-center justify-center w-8 h-8 rounded-full bg-hc-card border border-hc-border text-hc-textMuted font-bold font-mono text-xs z-10 shrink-0 sm:mx-auto">
+                            5
+                        </div>
+                        <div class="w-full sm:w-1/2 sm:pr-8 mt-3 sm:mt-0 sm:text-right">
+                            <div class="bg-hc-bg border border-hc-border p-5 rounded-lg">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-hc-border text-hc-textMuted inline-block mb-2">Phase 5 • Planned</span>
+                                <h3 class="text-lg font-bold text-hc-textHeading">Public Preview & Beta Testing</h3>
+                                <p class="text-xs text-hc-textMuted mt-2 leading-relaxed">
+                                    Community testing builds, comprehensive API documentation, and public developer previews.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DOWNLOAD SECTION -->
+        <section class="py-20 bg-hc-bg border-b border-hc-border">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <div class="bg-hc-panel border border-hc-border rounded-2xl p-8 sm:p-12">
+                    <div class="w-12 h-12 rounded-full bg-hc-amber/10 border border-hc-amber/30 text-hc-amber flex items-center justify-center mx-auto mb-6">
+                        <i data-lucide="download-cloud" class="w-6 h-6"></i>
+                    </div>
+
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-hc-textHeading mb-4">
+                        Download Status Notice
+                    </h2>
+
+                    <p class="text-hc-textMuted text-sm sm:text-base max-w-xl mx-auto mb-8 leading-relaxed">
+                        HammerCore is currently in active research and pre-alpha development. Public executable downloads will be announced when a usable release build meets our quality standards.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <button disabled class="w-full sm:w-auto px-6 py-3 rounded bg-hc-border text-hc-textMuted cursor-not-allowed font-mono text-xs flex items-center justify-center gap-2">
+                            <i data-lucide="lock" class="w-4 h-4"></i> Public Builds Unavailable
+                        </button>
+                        <a id="download-discord-cta" href="#" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto px-6 py-3 rounded bg-hc-cyan/10 border border-hc-cyan/40 text-hc-cyan font-mono text-xs hover:bg-hc-cyan/20 transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="bell" class="w-4 h-4"></i> Get Release Announcements
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ SECTION -->
+        <section id="faq" class="py-20 bg-hc-panel border-b border-hc-border">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-xs font-mono uppercase tracking-widest text-hc-cyan mb-3">Clear Answers</h2>
+                    <p class="text-3xl sm:text-4xl font-extrabold text-hc-textHeading">Frequently Asked Questions</p>
+                </div>
+
+                <div class="space-y-4" id="faq-accordion">
+                    <!-- Q1 -->
+                    <div class="bg-hc-bg border border-hc-border rounded-lg overflow-hidden">
+                        <button class="w-full p-5 text-left font-bold text-hc-textHeading flex items-center justify-between focus:outline-none text-sm sm:text-base" onclick="toggleFaq(this)">
+                            <span>What is HammerCore?</span>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-hc-cyan transition-transform"></i>
+                        </button>
+                        <div class="hidden p-5 pt-0 text-xs sm:text-sm text-hc-textMuted border-t border-hc-border/40 leading-relaxed">
+                            HammerCore is an ambitious mapping development platform in active development by Baytar Design. It aims to modernize Source Engine mapping workflows for Garry's Mod with AI assistance and real-time collaboration tools.
+                        </div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="bg-hc-bg border border-hc-border rounded-lg overflow-hidden">
+                        <button class="w-full p-5 text-left font-bold text-hc-textHeading flex items-center justify-between focus:outline-none text-sm sm:text-base" onclick="toggleFaq(this)">
+                            <span>Is HammerCore available for download yet?</span>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-hc-cyan transition-transform"></i>
+                        </button>
+                        <div class="hidden p-5 pt-0 text-xs sm:text-sm text-hc-textMuted border-t border-hc-border/40 leading-relaxed">
+                            No. HammerCore is currently in the initial research and phase 1 foundation stage. Public downloads will be announced when a stable, functional build is available.
+                        </div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="bg-hc-bg border border-hc-border rounded-lg overflow-hidden">
+                        <button class="w-full p-5 text-left font-bold text-hc-textHeading flex items-center justify-between focus:outline-none text-sm sm:text-base" onclick="toggleFaq(this)">
+                            <span>Will HammerCore support Garry's Mod and VMF files?</span>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-hc-cyan transition-transform"></i>
+                        </button>
+                        <div class="hidden p-5 pt-0 text-xs sm:text-sm text-hc-textMuted border-t border-hc-border/40 leading-relaxed">
+                            Yes. Maintaining full compatibility with standard Valve Map Format (.VMF) files, Source Engine entities, materials, and Garry's Mod content mounting is a core objective of the platform.
+                        </div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="bg-hc-bg border border-hc-border rounded-lg overflow-hidden">
+                        <button class="w-full p-5 text-left font-bold text-hc-textHeading flex items-center justify-between focus:outline-none text-sm sm:text-base" onclick="toggleFaq(this)">
+                            <span>Will AI-assisted mapping and multi-user editing be guaranteed?</span>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-hc-cyan transition-transform"></i>
+                        </button>
+                        <div class="hidden p-5 pt-0 text-xs sm:text-sm text-hc-textMuted border-t border-hc-border/40 leading-relaxed">
+                            These features are core development goals. While our architecture is being engineered specifically for synchronization and AI co-processing, exact feature implementations remain subject to technical feasibility during development.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- REPOSITORY FILE EXPORT MANAGER SECTION -->
+        <section id="files-export" class="py-20 bg-hc-bg border-b border-hc-border">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-12">
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-hc-amber/10 border border-hc-amber/30 text-xs font-mono text-hc-amber mb-4">
+                        <i data-lucide="folder-git-2" class="w-4 h-4"></i> GitHub Pages Deployment Center
+                    </div>
+                    <h2 class="text-3xl font-extrabold text-hc-textHeading">Source Code & Repository Bundle</h2>
+                    <p class="mt-2 text-hc-textMuted text-sm">
+                        You can view, copy, or download all project files (`index.html`, `style.css`, `script.js`, `README.md`) directly below to deploy this exact site to GitHub Pages instantly.
+                    </p>
+                </div>
+
+                <!-- File Viewer Card with Tabs -->
+                <div class="bg-hc-panel border border-hc-border rounded-xl overflow-hidden shadow-2xl">
+                    <!-- Tab Navigation Header -->
+                    <div class="bg-hc-card border-b border-hc-border px-4 py-2 flex items-center justify-between overflow-x-auto">
+                        <div class="flex space-x-2" id="file-tabs">
+                            <button onclick="switchFileTab('index.html')" id="tab-index.html" class="file-tab px-3 py-1.5 rounded text-xs font-mono transition-colors bg-hc-border text-hc-cyan font-semibold flex items-center gap-1.5">
+                                <i data-lucide="file-code" class="w-3.5 h-3.5"></i> index.html
+                            </button>
+                            <button onclick="switchFileTab('style.css')" id="tab-style.css" class="file-tab px-3 py-1.5 rounded text-xs font-mono transition-colors text-hc-textMuted hover:text-white flex items-center gap-1.5">
+                                <i data-lucide="file-type" class="w-3.5 h-3.5"></i> style.css
+                            </button>
+                            <button onclick="switchFileTab('script.js')" id="tab-script.js" class="file-tab px-3 py-1.5 rounded text-xs font-mono transition-colors text-hc-textMuted hover:text-white flex items-center gap-1.5">
+                                <i data-lucide="file-text" class="w-3.5 h-3.5"></i> script.js
+                            </button>
+                            <button onclick="switchFileTab('README.md')" id="tab-README.md" class="file-tab px-3 py-1.5 rounded text-xs font-mono transition-colors text-hc-textMuted hover:text-white flex items-center gap-1.5">
+                                <i data-lucide="file-question" class="w-3.5 h-3.5"></i> README.md
+                            </button>
+                        </div>
+                        <button onclick="copyCurrentFileCode()" class="px-3 py-1 rounded bg-hc-cyan/10 hover:bg-hc-cyan/20 border border-hc-cyan/30 text-hc-cyan text-xs font-mono transition-colors flex items-center gap-1 shrink-0 ml-4">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i> <span id="copy-btn-text">Copy File</span>
+                        </button>
+                    </div>
+
+                    <!-- Code Container -->
+                    <div class="p-4 bg-[#0d1117] overflow-x-auto max-h-[450px]">
+                        <pre id="file-code-display" class="font-mono text-xs text-slate-300 leading-relaxed"></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-hc-bg border-t border-hc-border py-12 text-xs font-mono text-hc-textMuted">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <!-- Branding -->
+                <div class="space-y-3">
+                    <span class="font-mono font-bold tracking-wider text-base text-hc-textHeading flex items-center gap-1">
+                        HAMMER<span class="text-hc-cyan">CORE</span>
+                    </span>
+                    <p class="text-hc-textMuted text-xs leading-relaxed">
+                        Next-generation mapping platform for Garry's Mod and Source Engine.
+                    </p>
+                    <div class="text-[11px] text-hc-textMuted">
+                        Developed by <strong class="text-hc-textHeading font-normal">Baytar Design</strong>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div>
+                    <h4 class="text-hc-textHeading font-bold uppercase mb-3 text-[11px] tracking-wider">Navigation</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="hover:text-hc-cyan">Home</a></li>
+                        <li><a href="#features" class="hover:text-hc-cyan">Features Grid</a></li>
+                        <li><a href="#collaboration" class="hover:text-hc-cyan">Collaboration</a></li>
+                        <li><a href="#ai-suite" class="hover:text-hc-cyan">AI Workflows</a></li>
+                        <li><a href="#roadmap" class="hover:text-hc-cyan">Roadmap</a></li>
+                    </ul>
+                </div>
+
+                <!-- Resources -->
+                <div>
+                    <h4 class="text-hc-textHeading font-bold uppercase mb-3 text-[11px] tracking-wider">Resources</h4>
+                    <ul class="space-y-2">
+                        <li><a id="footer-docs-link" href="#" target="_blank" class="hover:text-hc-cyan">Documentation</a></li>
+                        <li><a id="footer-github-link" href="#" target="_blank" class="hover:text-hc-cyan">GitHub Repository</a></li>
+                        <li><a id="footer-discord-link" href="#" target="_blank" class="hover:text-hc-cyan">Discord Community</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal / Disclaimer -->
+                <div>
+                    <h4 class="text-hc-textHeading font-bold uppercase mb-3 text-[11px] tracking-wider">Legal Disclaimer</h4>
+                    <p class="text-[11px] leading-relaxed text-hc-textMuted">
+                        HammerCore is an independent project by Baytar Design. It is not affiliated with, endorsed by, or connected to Valve Corporation, Facepunch Studios, or the developers of Hammer++.
+                    </p>
+                </div>
+            </div>
+
+            <div class="pt-8 border-t border-hc-border flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>
+                    &copy; 2026 HammerCore & Baytar Design. All rights reserved.
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span>Host: GitHub Pages Compatible</span>
+                    <span>•</span>
+                    <span class="text-hc-cyan">Engine Core v0.1.0-dev</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE SCRIPT LOGIC -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // 1. Mobile Menu Toggle
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+        if (mobileBtn && mobileMenu) {
+            mobileBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+        }
+
+        // 2. Hydrate Configurable External URLs
+        document.addEventListener('DOMContentLoaded', () => {
+            const setHref = (id, url) => {
+                const el = document.getElementById(id);
+                if (el) el.href = url;
+            };
+
+            setHref('nav-docs-link', CONFIG.docsUrl);
+            setHref('nav-discord-link', CONFIG.discordUrl);
+            setHref('mobile-docs-link', CONFIG.docsUrl);
+            setHref('mobile-discord-link', CONFIG.discordUrl);
+            setHref('download-discord-cta', CONFIG.discordUrl);
+            setHref('footer-docs-link', CONFIG.docsUrl);
+            setHref('footer-github-link', CONFIG.githubUrl);
+            setHref('footer-discord-link', CONFIG.discordUrl);
+
+            // Populate File Viewer initially
+            switchFileTab('index.html');
+        });
+
+        // 3. FAQ Accordion Toggle Logic
+        function toggleFaq(button) {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('[data-lucide="chevron-down"]');
+            
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                if (icon) icon.style.transform = 'rotate(180deg)';
+            } else {
+                content.classList.add('hidden');
+                if (icon) icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // 4. File Bundle Storage for Preview/Copy/Export
+        const FILE_STORE = {
+            'index.html': `<!-- Standard index.html entrypoint for GitHub Pages -->\n<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <title>HammerCore | Next-Gen Mapping Platform</title>\n  <link rel="stylesheet" href="style.css">\n</head>\n<body>\n  <!-- HammerCore UI Markup -->\n  <script src="script.js"><\/script>\n</body>\n</html>`,
+            'style.css': `/* HammerCore Software Visual Style Sheet */\n@tailwind base;\n@tailwind components;\n@tailwind utilities;\n\n:root {\n  --color-bg: #0a0c10;\n  --color-panel: #12161f;\n  --color-border: #283040;\n  --color-cyan: #00f0ff;\n  --color-amber: #ff9e00;\n}`,
+            'script.js': `// HammerCore Configuration & Engine Controller\nconst CONFIG = {\n  discordUrl: "https://discord.gg/example-hammercore-placeholder",\n  docsUrl: "https://docs.hammercore.dev-placeholder",\n  githubUrl: "https://github.com/baytardesign/hammercore-placeholder"\n};\nconsole.log("HammerCore initialization completed.");`,
+            'README.md': `# HammerCore Website Repository\n\nOfficial web application for **HammerCore** by Baytar Design.\n\n## Deployment Instructions (GitHub Pages)\n1. Create a public repository on GitHub.\n2. Commit \`index.html\`, \`style.css\`, \`script.js\`, and \`README.md\` to the root directory.\n3. Navigate to **Settings -> Pages**.\n4. Select **Source: Deploy from a branch** and pick \`main\` / \`/(root)\`.\n5. Save and access your published URL.`
+        };
+
+        let currentActiveTab = 'index.html';
+
+        function switchFileTab(fileName) {
+            currentActiveTab = fileName;
+            
+            // Update Tab UI
+            document.querySelectorAll('.file-tab').forEach(tab => {
+                tab.classList.remove('bg-hc-border', 'text-hc-cyan', 'font-semibold');
+                tab.classList.add('text-hc-textMuted');
+            });
+
+            const activeTab = document.getElementById(`tab-${fileName}`);
+            if (activeTab) {
+                activeTab.classList.add('bg-hc-border', 'text-hc-cyan', 'font-semibold');
+                activeTab.classList.remove('text-hc-textMuted');
+            }
+
+            // Update Code Content
+            const display = document.getElementById('file-code-display');
+            if (display) {
+                display.textContent = FILE_STORE[fileName] || '// File empty or missing';
+            }
+        }
+
+        function copyCurrentFileCode() {
+            const codeText = FILE_STORE[currentActiveTab];
+            if (!codeText) return;
+
+            // Browser Clipboard Copy Fallback
+            const tempInput = document.createElement('textarea');
+            tempInput.value = codeText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            const btnText = document.getElementById('copy-btn-text');
+            if (btnText) {
+                btnText.textContent = 'Copied!';
+                setTimeout(() => {
+                    btnText.textContent = 'Copy File';
+                }, 2000);
+            }
+        }
+    </script>
+</body>
+</html>
